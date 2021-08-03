@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "main.js": "index.js",
   "scripts": {
     "server": "NODE_ENV=production node index.js"
   },
@@ -11,8 +12,10 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "fs": "^0.0.1-security",
     "got": "^11.8.2",
     "md5": "^2.3.0",
-    "p-queue": "^6.6.2"
+    "p-queue": "^6.6.2",
+    "path": "^0.12.7"
   }
 }
