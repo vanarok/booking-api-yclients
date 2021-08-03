@@ -1,11 +1,15 @@
+const fs = require('fs')
+const path = require('path')
+
 const express = require('express');
 const app = express()
+
 const hash = require('md5');
 const md5key = "W@KS4q6x%g?XR8"
 const {default: PQueue} = require('p-queue');
 const queue = new PQueue({intervalCap: 1, interval: 200});
 const got = require('got');
-const port = 3000
+const port = 6745
 const basePath = '/api'
 const companyId = '494680'
 const authTokenUser = "7ab7473da117707ff4babe079e3dcb09"
@@ -269,3 +273,14 @@ app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
 
+const socketDir = path.join(__dirname, 'run')
+const socketFile = path.join(socketDir, 'express.sock')
+
+if (!fs.existsSync(socketDir)) {
+  fs.mkdirSync(socketDir)
+}// Remove old socket file if exists
+if (fs.existsSync(socketFile)) {
+  fs.unlinkSync(socketFile)
+}server = app.listen(socketFile, () => {
+  fs.chmodSync(socketFile, '777')
+})

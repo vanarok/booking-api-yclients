@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "server": "NODE_ENV=production node index.js"
+  },
   "devDependencies": {
     "request": "^2.88.2"
   },
