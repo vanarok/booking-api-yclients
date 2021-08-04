@@ -10,7 +10,7 @@ const port = 6745
 const basePath = '/api'
 const companyId = '494680'
 const authTokenUser = "7ab7473da117707ff4babe079e3dcb09"
-const authTokenBearer = 'kdbsg2ujeseu99a3uk7e'
+const authTokenBearer = '80faa2893eb9499e444f0c1ada89bfb9'
 const authToken = 'Bearer ' + authTokenBearer + ', User ' + authTokenUser
 const staffIdList = {
     "casinorobbery": ['1528160', '1528163'],
