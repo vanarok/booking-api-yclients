@@ -1,6 +1,3 @@
-const fs = require('fs')
-const path = require('path')
-
 const express = require('express');
 const app = express()
 
@@ -271,16 +268,4 @@ app.get(basePath + '/price/:staffId', async ({params, query}, res, next) => {
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
-})
-
-const socketDir = path.join(__dirname, 'run')
-const socketFile = path.join(socketDir, 'express.sock')
-
-if (!fs.existsSync(socketDir)) {
-  fs.mkdirSync(socketDir)
-}// Remove old socket file if exists
-if (fs.existsSync(socketFile)) {
-  fs.unlinkSync(socketFile)
-}server = app.listen(socketFile, () => {
-  fs.chmodSync(socketFile, '777')
 })

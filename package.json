@@ -7,9 +7,7 @@
   "scripts": {
     "server": "NODE_ENV=production node index.js"
   },
-  "devDependencies": {
-    "request": "^2.88.2"
-  },
+  "devDependencies": {},
   "dependencies": {
     "express": "^4.17.1",
     "fs": "^0.0.1-security",
