@@ -232,7 +232,7 @@ function postRecordYclients(json) {
 
 app.use(express.json())
 
-app.get('/seances/:staffId', asyncHandler(async ({params, query}, res) => {
+app.get('/api/seances/:staffId', asyncHandler(async ({params, query}, res) => {
     const validateUrl = await verifyParamUrl(params.staffId, query.api)
 
     if (!validateUrl) {
@@ -243,7 +243,7 @@ app.get('/seances/:staffId', asyncHandler(async ({params, query}, res) => {
     res.status(200).json(result)
 }))
 
-app.post('/record/:staffId', asyncHandler(async ({body, params, query}, res) => {
+app.post('/api/record/:staffId', asyncHandler(async ({body, params, query}, res) => {
     try {
         const validateUrl = await verifyParamUrl(params.staffId, query.api)
 
@@ -259,7 +259,7 @@ app.post('/record/:staffId', asyncHandler(async ({body, params, query}, res) => 
     }
 }))
 
-app.get('/price/:staffId', asyncHandler(async ({params, query}, res) => {
+app.get('/api/price/:staffId', asyncHandler(async ({params, query}, res) => {
     const validateUrl = await verifyParamUrl(params.staffId, query.api) && dateFormat.test(query.date) && timeFormat.test(query.time)
 
     if (!validateUrl) {
