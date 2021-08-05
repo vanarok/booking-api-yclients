@@ -1,17 +1,21 @@
+require('dotenv').config()
+
 const express = require('express');
 const app = express()
+const asyncHandler = require('express-async-handler')
+
 
 const hash = require('md5');
-const md5key = "W@KS4q6x%g?XR8"
 const {default: PQueue} = require('p-queue');
 const queue = new PQueue({intervalCap: 1, interval: 200});
 const got = require('got');
-const port = 6745
-const basePath = '/api'
-const companyId = '494680'
-const authTokenUser = "80faa2893eb9499e444f0c1ada89bfb9"
-const authTokenBearer = 'kdbsg2ujeseu99a3uk7e'
-const authToken = 'Bearer ' + authTokenBearer + ', User ' + authTokenUser
+
+const port = process.env.PORT
+const companyId = process.env.COMPANY_ID
+const authTokenBearer = process.env.BEARER_TOKEN
+const authTokenUser = process.env.USER_TOKEN
+const md5key = process.env.MD5_KEY
+
 const staffIdList = {
     "casinorobbery": ['1528160', '1528163'],
     "drfrankenstein": ['1528164', '1528166'],
@@ -22,14 +26,14 @@ const option = {
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/vnd.yclients.v2+json',
-        'Authorization': authToken
+        'Authorization': 'Bearer ' + authTokenBearer + ', User ' + authTokenUser
     }
 }
 const success = {
     "time": {"success": false, "message": "Указанное время занято"},
     "true": {"success": true},
     "hash": {"success": false, "message": "Неверный md5 хэш"},
-    "invalid": {"success": false, "message": "Неверные параметры url"},
+    "invalid": {"success": false, "message": "Неверные параметры запроса"},
     "staff": {"success": false, "message": "Отсутствует свободный сотрудник на эту дату и время"},
     "post": {"success": false, "message": "Не удалось зарегистрировать бронирование"}
 }
@@ -148,7 +152,6 @@ async function workDateSort([daySeanceId, nightSeanceId], date, days) {
     return workDay.filter((item, index) => (workDay.indexOf(item) === index)).sort()
 }
 
-
 async function styleQg(seance, date, durationSeance, staffId, standardPrice) {
     const dateNow = (new Date()).toISOString().split('T')[0]
     return date === dateNow || date < dateNow ? await expiredSeance(await filterMap(seance, date, durationSeance, staffId, standardPrice)) : await filterMap(seance, date, durationSeance, staffId, standardPrice)
@@ -205,66 +208,67 @@ function getSeanceYclients(questId, date) {
     });
 }
 
-
 function postRecordYclients(json) {
-    try {
+    //try {
         return queue.add(async () => {
             return got.post('https://api.yclients.com/api/v1/records/' + companyId, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/vnd.yclients.v2+json',
-                    'Authorization': authToken
+                    'Authorization': 'Bearer ' + authTokenBearer + ', User ' + authTokenUser
                 },
                 json: json,
                 responseType: 'json',
             }).json();
         });
-    } catch (err) {
-        console.log(err)
-        console.log(JSON.stringify(err.response.body))
-        console.log(err.response.json)
+   // } catch (err) {
+   //     console.log(err)
+   //     console.log(JSON.stringify(err.response.body))
+   //     console.log(err.response.json)
 
-        return success.post;
-    }
+    //    return success.post;
+   // }
 }
 
 app.use(express.json())
 
-app.get(basePath + '/seances/:staffId', async ({params, query}, res, next) => {
+app.get('/seances/:staffId', asyncHandler(async ({params, query}, res) => {
+    const validateUrl = await verifyParamUrl(params.staffId, query.api)
+
+    if (!validateUrl) {
+        return res.status(404).json(success.invalid)
+    }
+
+    const result = validateUrl && numbersFormat.test(query.amount) ? await getSeances(staffIdList[params.staffId], query.api, dateFormat.test(query.date) ? query.date : new Date(), query.amount) : success.invalid
+    res.status(200).json(result)
+}))
+
+app.post('/record/:staffId', asyncHandler(async ({body, params, query}, res) => {
     try {
         const validateUrl = await verifyParamUrl(params.staffId, query.api)
-        const seances = await getSeances(staffIdList[params.staffId], query.api, dateFormat.test(query.date) ? query.date : new Date(), query.amount);
 
-        res.status(200).json(validateUrl && numbersFormat.test(query.amount) ? seances : success.invalid)
+        if (!validateUrl) {
+            return res.status(404).json(success.invalid)
+        }
+
+        res.status(200).json(validateUrl ? await postRecord(staffIdList[params.staffId], query.api, body) : success.invalid)
     } catch (err) {
-        res.status(422).json(success.invalid)
-        next(err)
+        if (err.response.code !== 201) {
+            return res.status(422).json(success.time)
+        }
     }
-})
+}))
 
-app.post(basePath + '/record/:staffId', async ({body, params, query}, res, next) => {
-    try {
-        const validateUrl = await verifyParamUrl(params.staffId, query.api)
-        const postResult = await postRecord(staffIdList[params.staffId], query.api, body)
+app.get('/price/:staffId', asyncHandler(async ({params, query}, res) => {
+    const validateUrl = await verifyParamUrl(params.staffId, query.api) && dateFormat.test(query.date) && timeFormat.test(query.time)
 
-        res.status(200).json(validateUrl ? postResult : success.invalid)
-    } catch (err) {
-        res.status(422).json(success.invalid)
-        next(err)
+    if (!validateUrl) {
+        return res.status(404).json(success.invalid)
     }
-})
 
-app.get(basePath + '/price/:staffId', async ({params, query}, res, next) => {
-    try {
-        const validateUrl = await verifyParamUrl(params.staffId, query.api) && dateFormat.test(query.date) && timeFormat.test(query.time)
-        const prices = await getPrice(staffIdList[params.staffId], query.api, query.date, query.time)
-
-        res.status(200).json(validateUrl ? prices : success.invalid)
-    } catch (err) {
-        res.status(422).json(success.invalid)
-        next(err)
-    }
-})
+    const result = await getPrice(staffIdList[params.staffId], query.api, query.date, query.time)
+    res.status(200).json(result)
+}))
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)

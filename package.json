@@ -9,11 +9,11 @@
   },
   "devDependencies": {},
   "dependencies": {
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "fs": "^0.0.1-security",
+    "express-async-handler": "^1.1.4",
     "got": "^11.8.2",
     "md5": "^2.3.0",
-    "p-queue": "^6.6.2",
-    "path": "^0.12.7"
+    "p-queue": "^6.6.2"
   }
 }
