@@ -15,7 +15,7 @@ async function getPrice(staffId, api, date, time) {
   const filterSeance = seance.filter(e => e.date === date && e.time === time);
   const serviceStaffId = await getServiceYclients(filterSeance[0].staffId);
   const result = Object.assign({}, ...serviceStaffId.map(({price_min, title}) => ({
-    [title.split(' в ')[0] + ' ' + price_min + ' руб:']: price_min,
+    [title.split(' в ')[0] + ':' + price_min + ' руб.']: price_min,
   })));
 
   return seance.length !== 0 ? result : success.noFreeStaff;
@@ -43,9 +43,6 @@ async function getSeances(staffId, api, date, amount) {
 
     for (let j = 0; j < amount; j++) {
       const seance = await getSeanceYclients(staffId[i], workDays[j]);
-      //console.log(staffId[i])
-      //console.log(workDays[j])
-      //console.log(seance)
       if (seance.length === 0) continue;
 
       seances = seances.concat(
