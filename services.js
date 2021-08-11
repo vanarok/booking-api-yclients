@@ -14,9 +14,10 @@ async function getPrice(staffId, api, date, time) {
   const seance = await getSeances(staffId, api, date, 1);
   const filterSeance = seance.filter(e => e.date === date && e.time === time);
   const serviceStaffId = await getServiceYclients(filterSeance[0].staffId);
-  const result = Object.assign({}, ...serviceStaffId.map(({price_min, title}) => ({
-    [title.split(' в ')[0] + ':' + price_min + ' руб.']: price_min,
-  })));
+  const result = Object.assign({},
+      ...serviceStaffId.map(({price_min, title}) => ({
+        [title.split(' в ')[0] + ':' + price_min + ' руб.']: price_min,
+      })));
 
   return seance.length !== 0 ? result : success.noFreeStaff;
 }
@@ -30,12 +31,13 @@ async function getPrice(staffId, api, date, time) {
 async function getSeances(staffId, api, date, amount) {
   const workDays = await getWorkDay(staffId, date, amount > 1 ? 30 : 0);
   let seances = [];
-  //console.log(s)
-  //console.log(staffId)
   for (let i = 0; i < staffId.length; i++) {
     const service = await getServiceYclients(staffId[i]);
     const priceGroups = service.map(
-        ({price_min, title}) => ({persons: parseInt(title.split(' ')[3]), price: price_min}));
+        ({price_min, title}) => ({
+          persons: parseInt(title.split(' ')[3]),
+          price: price_min,
+        }));
     const {price_min: price} = service[0];
     const durationSeance = service.filter(
         ({price_min}) => parseInt(price_min) ===
@@ -60,18 +62,18 @@ async function getSeances(staffId, api, date, amount) {
   return seances;
 }
 
-async function postRecord(questID, api, {
-  first_name,
-  family_name,
-  phone,
-  email,
-  comment,
-  date,
-  time,
-  price,
-  staffId,
-}) {
-
+async function postRecord(questID, api, body) {
+  const {
+    first_name,
+    family_name,
+    phone,
+    email,
+    comment,
+    date,
+    time,
+    price,
+    staffId,
+  } = Object.assign({}, ...body.map(({key, value}) => ({[key]: value})));
   const services = await getServiceYclients(staffId);
   const filterPrice = services.filter(
       ({price_min}) => parseInt(price_min) === parseInt(price));
