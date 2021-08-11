@@ -63,7 +63,6 @@ async function getSeances(staffId, api, date, amount) {
 }
 
 async function postRecord(questID, api, body) {
-  console.log(body)
   const {
     first_name,
     family_name,
