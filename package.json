@@ -1,12 +1,13 @@
 {
   "name": "api_wrapper",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "2.0.0",
+  "main": "app.js",
   "license": "MIT",
-  "main.js": "index.js",
+  "main.js": "app.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js"
+    "start": "NODE_ENV=production node app.js"
   },
+  "type": "module",
   "devDependencies": {},
   "dependencies": {
     "dotenv": "^10.0.0",
