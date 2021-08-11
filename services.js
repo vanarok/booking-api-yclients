@@ -62,18 +62,17 @@ async function getSeances(staffId, api, date, amount) {
   return seances;
 }
 
-async function postRecord(questID, api, body) {
-  const {
-    first_name,
-    family_name,
-    phone,
-    email,
-    comment,
-    date,
-    time,
-    price,
-    staffId,
-  } = Object.assign({}, ...body.map(({key, value}) => ({[key]: value})));
+async function postRecord(questID, api, {
+  first_name,
+  family_name,
+  phone,
+  email,
+  comment,
+  date,
+  time,
+  price,
+  staffId,
+}) {
   const services = await getServiceYclients(staffId);
   const filterPrice = services.filter(
       ({price_min}) => parseInt(price_min) === parseInt(price));

@@ -46,7 +46,6 @@ router.post('/api/record/:staffId',
       const trueUrl = await validateUrl(params.staffId, api);
 
       if (!trueUrl) return res.status(404).json(success.wrongReq);
-      res.json(body)
       const result = await postRecord(arrStaffId[params.staffId], api, body);
       res.status(200).json(result);
     }));

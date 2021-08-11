@@ -5,7 +5,7 @@ import router from './routes.js';
 const app = express();
 
 //расширение для разбора response post
-app.use(express.json());
+app.use(express.urlencoded({extended:false}));
 //Routes
 app.use(router);
 
