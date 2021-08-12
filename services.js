@@ -73,6 +73,8 @@ async function postRecord(questID, api, {
   price,
   staffId,
 }) {
+  if (new Date(date + 'T' + time + ':00+03:00') <
+      new Date()) return success.recordFailTime;
   const services = await getServiceYclients(staffId);
   const filterPrice = services.filter(
       ({price_min}) => parseInt(price_min) === parseInt(price));

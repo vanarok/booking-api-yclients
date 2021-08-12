@@ -17,7 +17,7 @@ export const arrStaffId = {
 
 export const success = {
   'yes': {'success': true},
-  'time_busy': {'success': false, 'message': 'Указанное время занято'},
+  'time_busy': {'success': false, 'message': 'Выбранное время недоступно'},
   'hashWrong': {'success': false, 'message': 'Неверный md5 хэш'},
   'wrongReq': {'success': false, 'message': 'Неверные параметры запроса'},
   'noFreeStaff': {
@@ -28,10 +28,15 @@ export const success = {
     'success': false,
     'message': 'Не удалось зарегистрировать бронирование',
   },
+  'recordFailTime': {
+    'success': false,
+    'message': 'Время бронирования вышло',
+  }
 };
 export const apiIdList = {
   'questguild': 1,
   'topkvestov': 2,
+  'mirkvestov': 3,
 };
 export const dateFormat = /^\d{4}-\d{2}-\d{2}$/;
 export const timeFormat = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/;
