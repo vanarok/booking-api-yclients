@@ -31,7 +31,7 @@ async function getPrice(staffId, api, date, time) {
  */
 async function getSeances(staffId, api, date, amount) {
   const workDays = await getWorkDay(staffId, date, amount > 1 ? 30 : 0);
-  let seances = [];q
+  let seances = [];
   for (let i = 0; i < staffId.length; i++) {
     const service = await getServiceYclients(staffId[i]);
     const priceGroups = service.map(
