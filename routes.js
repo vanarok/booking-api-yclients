@@ -44,7 +44,7 @@ router.get('/api/price/:staffId',
 router.post('/api/record/:staffId',
     asyncHandler(async ({body, params, query: {api}}, res) => {
       const trueUrl = await validateUrl(params.staffId, api);
-
+console.log(body)
       if (!trueUrl) return res.status(404).json(success.wrongReq);
       const result = await postRecord(arrStaffId[params.staffId], api, body);
       res.status(200).json(result);

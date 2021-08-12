@@ -16,7 +16,8 @@ async function getPrice(staffId, api, date, time) {
   const serviceStaffId = await getServiceYclients(filterSeance[0].staffId);
   const result = Object.assign({},
       ...serviceStaffId.map(({price_min, title}) => ({
-        [title.split(' в ')[0] + ':' + price_min + ' руб.']: price_min,
+        ['Группа из ' + title.match(/\[([\d+)]+)\]/u)[1] + 'чел.' + price_min +
+        ' руб']: price_min,
       })));
 
   return seance.length !== 0 ? result : success.noFreeStaff;
@@ -30,12 +31,12 @@ async function getPrice(staffId, api, date, time) {
  */
 async function getSeances(staffId, api, date, amount) {
   const workDays = await getWorkDay(staffId, date, amount > 1 ? 30 : 0);
-  let seances = [];
+  let seances = [];q
   for (let i = 0; i < staffId.length; i++) {
     const service = await getServiceYclients(staffId[i]);
     const priceGroups = service.map(
         ({price_min, title}) => ({
-          persons: parseInt(title.split(' ')[3]),
+          persons: parseInt(title.match(/\[([\d+)]+)\]/u)[1]),
           price: price_min,
         }));
     const {price_min: price} = service[0];
@@ -88,7 +89,7 @@ async function postRecord(questID, api, {
     'services': [
       {
         'id': id,
-        'cost': price,
+        'cost': parseInt(price),
       },
     ],
     'client': {
