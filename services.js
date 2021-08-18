@@ -4,10 +4,25 @@ import {
   getWorkDayYclients,
   postRecordYclients,
 } from './models.js';
-import {apiIdList, arrStaffId, success} from './config.js';
+import {apiIdList, arrStaffId, storeSeances, success} from './config.js';
 
 function validateUrl(staffId, api) {
   return arrStaffId.hasOwnProperty(staffId) && apiIdList.hasOwnProperty(api);
+}
+
+async function updateStoreSeances() {
+  let keysStaffId = Object.keys(arrStaffId);
+  let keysApiId = Object.keys(apiIdList);
+  for (let i = 0; i < keysApiId.length; i++) {
+    let obj = {};
+    for (let j = 0; j < keysStaffId.length; j++) {
+      obj[keysStaffId[j]] =
+          await getSeances(arrStaffId[keysStaffId[j]], keysApiId[i],
+              new Date(), 14);
+    }
+    storeSeances[keysApiId[i]] = obj
+  }
+  return storeSeances;
 }
 
 async function getPrice(staffId, api, date, time) {
@@ -16,7 +31,7 @@ async function getPrice(staffId, api, date, time) {
   const serviceStaffId = await getServiceYclients(filterSeance[0].staffId);
   const result = Object.assign({},
       ...serviceStaffId.map(({price_min, title}) => ({
-        ['Группа из ' + title.match(/\[([\d+)]+)\]/u)[1] + 'чел.' + price_min +
+        [title.match(/\[([\d+)]+)\]/u)[1] + ' чел. ' + price_min +
         ' руб']: price_min,
       })));
 
@@ -59,7 +74,6 @@ async function getSeances(staffId, api, date, amount) {
         db = new Date(b.date);
     return da - db;
   });
-
   return seances;
 }
 
@@ -156,4 +170,5 @@ export {
   getPrice,
   getSeances,
   postRecord,
+  updateStoreSeances,
 };
