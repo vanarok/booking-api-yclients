@@ -11,6 +11,7 @@ function validateUrl(staffId, api) {
 }
 
 async function updateStoreSeances() {
+  let newStoreSeances = {}
   let keysStaffId = Object.keys(arrStaffId);
   let keysApiId = Object.keys(apiIdList);
   for (let i = 0; i < keysApiId.length; i++) {
@@ -20,9 +21,9 @@ async function updateStoreSeances() {
           await getSeances(arrStaffId[keysStaffId[j]], keysApiId[i],
               new Date(), 14);
     }
-    storeSeances[keysApiId[i]] = obj
+    newStoreSeances[keysApiId[i]] = obj;
   }
-  return storeSeances;
+  storeSeances = newStoreSeances
 }
 
 async function getPrice(staffId, api, date, time) {
@@ -57,7 +58,7 @@ async function getSeances(staffId, api, date, amount) {
     const {price_min: price} = service[0];
     const durationSeance = service.filter(
         ({price_min}) => parseInt(price_min) ===
-            parseInt(price))[0]['staff'][0][0].seance_length;
+            parseInt(price))[0]['staff'][0].seance_length;
 
     for (let j = 0; j < amount; j++) {
       const seance = await getSeanceYclients(staffId[i], workDays[j]);
@@ -97,7 +98,6 @@ async function postRecord(questID, api, {
   if (filterPrice.length <= 0) return success.recordFail;
 
   const {id, staff} = filterPrice[0];
-
   return (await postRecordYclients({
     'staff_id': staffId,
     'services': [
@@ -116,7 +116,7 @@ async function postRecord(questID, api, {
     'email_remain_hours': 12,
     'save_if_busy': false,
     'datetime': date + 'T' + time + ':00+03:00',
-    'seance_length': parseInt((staff)[0][0].seance_length),
+    'seance_length': parseInt((staff)[0].seance_length),
     'comment': comment,
     'attendance': 0,
     'api_id': apiIdList[api],
