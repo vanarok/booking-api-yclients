@@ -36,6 +36,7 @@ export const apiIdList = {
   'topkvestov': 2,
   'mirkvestov': 3,
 };
+export function replaceStoreSeances( value ) { storeSeances = value; }
 export let storeSeances = {}
 export const dateFormat = /^\d{4}-\d{2}-\d{2}$/;
 export const timeFormat = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/;

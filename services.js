@@ -4,7 +4,12 @@ import {
   getWorkDayYclients,
   postRecordYclients,
 } from './models.js';
-import {apiIdList, arrStaffId, storeSeances, success} from './config.js';
+import {
+  apiIdList,
+  arrStaffId,
+  replaceStoreSeances,
+  success,
+} from './config.js';
 
 function validateUrl(staffId, api) {
   return arrStaffId.hasOwnProperty(staffId) && apiIdList.hasOwnProperty(api);
@@ -23,7 +28,7 @@ async function updateStoreSeances() {
     }
     newStoreSeances[keysApiId[i]] = obj;
   }
-  storeSeances = newStoreSeances
+  replaceStoreSeances(newStoreSeances)
 }
 
 async function getPrice(staffId, api, date, time) {
