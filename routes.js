@@ -1,6 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import {
+  apiIdList,
   arrStaffId,
   dateFormat,
   numbersFormat,
@@ -24,12 +25,12 @@ router.get('/api/seances/:staffId',
 
 router.get('/api/price/:staffId',
     asyncHandler(async ({
-      params: {staffId}, query: {
+                          params: {staffId}, query: {
         api,
         date,
         time,
       },
-    }, res) => {
+                        }, res) => {
       const trueUrl = await validateUrl(staffId, api) &&
           dateFormat.test(date) && timeFormat.test(time);
 
@@ -45,6 +46,14 @@ router.post('/api/record/:staffId',
       const trueUrl = await validateUrl(params.staffId, api);
       if (!trueUrl) return res.status(404).json(success.wrongReq);
       const result = await postRecord(arrStaffId[params.staffId], api, body);
+      let newStoreSeances = storeSeances;
+      let index = await storeSeances[api][params.staffId].findIndex(
+          e => e.date === body.date && e.time === body.time);
+      let keysApiId = Object.keys(apiIdList);
+
+      for (let i = 0; i < keysApiId.length; i++) {
+        newStoreSeances[keysApiId[i]][params.staffId][index].is_free = false;
+      }
       res.status(200).json(result);
     }));
 

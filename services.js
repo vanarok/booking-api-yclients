@@ -16,7 +16,7 @@ function validateUrl(staffId, api) {
 }
 
 async function updateStoreSeances() {
-  let newStoreSeances = {}
+  let newStoreSeances = {};
   let keysStaffId = Object.keys(arrStaffId);
   let keysApiId = Object.keys(apiIdList);
   for (let i = 0; i < keysApiId.length; i++) {
@@ -24,11 +24,11 @@ async function updateStoreSeances() {
     for (let j = 0; j < keysStaffId.length; j++) {
       obj[keysStaffId[j]] =
           await getSeances(arrStaffId[keysStaffId[j]], keysApiId[i],
-              new Date(), 14);
+              new Date(), 30);
     }
     newStoreSeances[keysApiId[i]] = obj;
   }
-  replaceStoreSeances(newStoreSeances)
+  replaceStoreSeances(newStoreSeances);
 }
 
 async function getPrice(staffId, api, date, time) {
@@ -51,7 +51,7 @@ async function getPrice(staffId, api, date, time) {
  * @param {number} amount
  */
 async function getSeances(staffId, api, date, amount) {
-  const workDays = await getWorkDay(staffId, date, amount > 1 ? 30 : 0);
+  const workDays = await getWorkDay(staffId, date, amount > 1 ? 90 : 0);
   let seances = [];
   for (let i = 0; i < staffId.length; i++) {
     const service = await getServiceYclients(staffId[i]);

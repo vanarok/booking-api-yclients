@@ -11,7 +11,6 @@ app.use(express.urlencoded({extended: false}));
 app.use(router);
 
 app.listen(port, () => {
-  console.log('**Express Version: ');
   console.log(`Example app listening at http://localhost:${port}`);
 });
 updateStoreSeances()
